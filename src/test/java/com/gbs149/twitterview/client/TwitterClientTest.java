@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import twitter4j.*;
 import twitter4j.api.SearchResource;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +48,7 @@ class TwitterClientTest {
     private void setUpMocks() throws TwitterException {
         when(twitter.search()).thenReturn(searchResource);
         when(searchResource.search(any(Query.class))).thenReturn(queryResult);
-        when(queryResult.getTweets()).thenReturn(List.of(status));
+        when(queryResult.getTweets()).thenReturn(Collections.singletonList(status));
         when(status.getUser()).thenReturn(user);
         when(status.getCreatedAt()).thenReturn(DateProvider.getDate());
     }
@@ -59,7 +61,7 @@ class TwitterClientTest {
         query.setResultType(Query.ResultType.recent);
 
         List<TweetResponse> tweetResponses = twitterClient.search(
-                List.of(QUERY_1, QUERY_2),
+                Arrays.asList(QUERY_1, QUERY_2),
                 Query.ResultType.recent);
 
         verify(searchResource).search(query);
