@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 @Builder
 public class TweetResponse implements Serializable {
     private static final long serialVersionUID = 5017165254734218760L;
+
     private String userName;
+
     private String text;
+
     private LocalDateTime createdAt;
+
 }

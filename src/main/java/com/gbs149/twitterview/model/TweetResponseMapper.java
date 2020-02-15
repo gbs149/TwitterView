@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import static com.gbs149.twitterview.util.LocalDateTimeConverter.toLocalDateTime;
 
 public class TweetResponseMapper {
+    private TweetResponseMapper() {
+    }
+
     public static TweetResponse statusToResponse(Status status) {
         return TweetResponse.builder()
                 .userName(status.getUser().getName())
