@@ -16,6 +16,7 @@ import twitter4j.TwitterException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,9 +39,22 @@ class TwitterRestTest {
         when(twitterClient.search(anyList(), any(Query.ResultType.class)))
                 .thenReturn(Collections.singletonList(new TweetResponse()));
 
-        ResponseEntity<List<TweetResponse>> responseEntity = twitterRest.search(QUERY, Query.ResultType.recent);
+        ResponseEntity<List<TweetResponse>> responseEntity = twitterRest.search(QUERY, Optional.of(Query.ResultType.recent));
 
         verify(twitterClient).search(QUERY, Query.ResultType.recent);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(1, responseEntity.getBody().size());
+    }
+
+    @Test
+    @DisplayName("It should search Twitter with default ResultType")
+    void searchDefaultResultTypeTest() throws TwitterException {
+        when(twitterClient.search(anyList(), any(Query.ResultType.class)))
+                .thenReturn(Collections.singletonList(new TweetResponse()));
+
+        ResponseEntity<List<TweetResponse>> responseEntity = twitterRest.search(QUERY, Optional.empty());
+
+        verify(twitterClient).search(QUERY, Query.ResultType.mixed);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1, responseEntity.getBody().size());
     }
@@ -53,7 +67,7 @@ class TwitterRestTest {
         when(twitterClient.search(any(), any())).thenThrow(twitterException);
 
         ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class,
-                () -> twitterRest.search(QUERY, Query.ResultType.recent));
+                () -> twitterRest.search(QUERY, Optional.of(Query.ResultType.recent)));
 
         assertTrue(responseStatusException.getMessage().contains("Erro ao consultar Twitter."));
         assertEquals(HttpStatus.BAD_REQUEST, responseStatusException.getStatus());

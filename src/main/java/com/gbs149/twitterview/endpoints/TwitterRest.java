@@ -14,6 +14,7 @@ import twitter4j.Query;
 import twitter4j.TwitterException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/twittersearch")
@@ -25,9 +26,9 @@ public class TwitterRest {
     @GetMapping
     public ResponseEntity<List<TweetResponse>> search(
             @RequestParam(name = "q") List<String> query,
-            @RequestParam(name = "resultType") Query.ResultType resultType) {
+            @RequestParam(name = "resultType") Optional<Query.ResultType> resultType) {
         try {
-            return new ResponseEntity<>(twitterClient.search(query, resultType), HttpStatus.OK);
+            return new ResponseEntity<>(twitterClient.search(query, resultType.orElse(Query.ResultType.mixed)), HttpStatus.OK);
         } catch (TwitterException e) {
             throw new ResponseStatusException(
                     HttpStatus.valueOf(e.getStatusCode()), "Erro ao consultar Twitter.", e);
