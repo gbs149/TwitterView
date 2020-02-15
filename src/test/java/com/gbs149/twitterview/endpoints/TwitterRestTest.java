@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import twitter4j.Query;
 import twitter4j.TwitterException;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TwitterRestTest {
 
-    public static final List<String> QUERY = List.of("query");
+    public static final List<String> QUERY = Collections.singletonList("query");
     @InjectMocks
     private TwitterRest twitterRest;
 
@@ -35,7 +36,7 @@ class TwitterRestTest {
     @DisplayName("It should search Twitter")
     void searchTest() throws TwitterException {
         when(twitterClient.search(anyList(), any(Query.ResultType.class)))
-                .thenReturn(List.of(new TweetResponse()));
+                .thenReturn(Collections.singletonList(new TweetResponse()));
 
         ResponseEntity<List<TweetResponse>> responseEntity = twitterRest.search(QUERY, Query.ResultType.recent);
 
