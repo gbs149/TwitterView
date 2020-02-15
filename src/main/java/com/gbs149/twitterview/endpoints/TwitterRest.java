@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import twitter4j.Query;
 import twitter4j.TwitterException;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -25,8 +25,13 @@ public class TwitterRest {
     @GetMapping
     public ResponseEntity<List<TweetResponse>> search(
             @RequestParam(name = "q") List<String> query,
-            @RequestParam(name = "resultType") Query.ResultType resultType)
-            throws TwitterException, UnsupportedEncodingException {
-        return new ResponseEntity<>(twitterClient.search(query, resultType), HttpStatus.OK);
+            @RequestParam(name = "resultType") Query.ResultType resultType) {
+        try {
+            return new ResponseEntity<>(twitterClient.search(query, resultType), HttpStatus.OK);
+        } catch (TwitterException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.valueOf(e.getStatusCode()), "Erro ao consultar Twitter.", e);
+        }
+
     }
 }

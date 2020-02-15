@@ -1,8 +1,11 @@
 package com.gbs149.twitterview.client;
 
 import com.gbs149.twitterview.model.TweetResponse;
-import lombok.extern.slf4j.Slf4j;
-import twitter4j.*;
+import lombok.SneakyThrows;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.api.SearchResource;
 
 import java.io.UnsupportedEncodingException;
@@ -12,24 +15,26 @@ import java.util.stream.Collectors;
 
 import static com.gbs149.twitterview.model.TweetResponseMapper.statusesToResponses;
 
-@Slf4j
 public class TwitterClient {
-    Twitter twitter = TwitterFactory.getSingleton();
+    Twitter twitter;
+
+    public TwitterClient(Twitter twitter) {
+        this.twitter = twitter;
+    }
 
     public List<TweetResponse> search(List<String> hashtags, Query.ResultType resultType)
-            throws TwitterException, UnsupportedEncodingException {
+            throws TwitterException {
         SearchResource searchResource = twitter.search();
 
         Query query = new Query(formatQuery(hashtags));
         query.setResultType(resultType);
 
-        log.info(query.toString());
-
         QueryResult queryResult = searchResource.search(query);
         return statusesToResponses(queryResult.getTweets());
     }
 
-    private String formatQuery(List<String> query) throws UnsupportedEncodingException {
+    @SneakyThrows(UnsupportedEncodingException.class)
+    private String formatQuery(List<String> query) {
         String queryString = query.stream()
                 .map(this::addHashtag)
                 .collect(Collectors.joining(" OR "));

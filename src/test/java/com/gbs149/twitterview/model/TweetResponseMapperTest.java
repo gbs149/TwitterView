@@ -10,6 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import twitter4j.Status;
 import twitter4j.User;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -44,5 +47,15 @@ class TweetResponseMapperTest {
                 () -> assertEquals(TEXT, tweetResponse.getText()),
                 () -> DateProvider.assertLocalDateTime(tweetResponse.getCreatedAt())
         );
+    }
+
+    @Test
+    @DisplayName("It should convert List<Status> to List<TwitterResponse>")
+    void statusesToResponsesTest() {
+        List<Status> statuses = Collections.singletonList(status);
+
+        List<TweetResponse> tweetResponses = TweetResponseMapper.statusesToResponses(statuses);
+
+        assertEquals(1, tweetResponses.size());
     }
 }
