@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/twittersearch")
-@CrossOrigin(origins = "https://twitterview.netlify.com")
+@CrossOrigin(origins = {"https://twitterview.netlify.com", "http://localhost:4200"})
 @AllArgsConstructor
 public class TwitterRest {
 
